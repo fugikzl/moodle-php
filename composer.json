@@ -1,0 +1,14 @@
+{
+    "name": "fugikzl/moodle-wrapper",
+    "description": "Wrapper for moodle webservices rest api",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^7.8"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Fugikzl\\MoodleWrapper\\": "src/"
+        }
+    }
+}
