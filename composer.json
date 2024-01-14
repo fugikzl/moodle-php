@@ -1,5 +1,5 @@
 {
-    "name": "fugikzl/moodle-wrapper",
+    "name": "fugikzl/moodle-php",
     "description": "Wrapper for moodle webservices rest api",
     "type": "library",
     "require": {
