@@ -4,7 +4,6 @@ namespace Fugikzl\MoodleWrapper;
 
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request as Psr7Request;
 
 class Request
 {

@@ -14,7 +14,7 @@ class Moodle
     private function ensureUserIdIsSet()
     {
         if ($this->userId === null) {
-            throw new Exception("User Id required. Attribure userId is required for that operation.");
+            throw new Exception("User Id is required. Attribure userId is required for that operation.");
         }
     }
 
@@ -34,7 +34,11 @@ class Moodle
     public function getCalendarActionByTimesort(int $timeSortFrom, int $timeSortTo) : array
     {
         $this->ensureUserIdIsSet();
-        $request = $this->constructRequest("core_calendar_get_action_events_by_timesort", [ "timesortfrom" => $timeSortFrom, "timesortto" => $timeSortTo]);
+        $request = $this->constructRequest("core_calendar_get_action_events_by_timesort", [
+            "timesortfrom" => $timeSortFrom, 
+            "timesortto" => $timeSortTo
+        ]);
+        
         return $request->send();
     }
 
@@ -49,6 +53,48 @@ class Moodle
     public function getCoursesInfo(int $courseid) : array
     {
         $request = $this->constructRequest("core_course_get_contents",["courseid" => $courseid]);
+        
+        return $request->send();
+    }
+
+    public function getUserCoursesGrade() : array
+    {
+        $this->ensureUserIdIsSet();
+        $request = $this->constructRequest("gradereport_overview_get_course_grades", ["userid" => $this->userId]);
+        
+        return $request->send();
+    }
+
+    public function getCourseGrades(int $courseid) : array
+    {
+        $this->ensureUserIdIsSet();
+        $request = $this->constructRequest("gradereport_user_get_grade_items", [
+            "courseid" => $courseid, 
+            "userid" => $this->userId
+        ]);
+        
+        return $request->send();
+    }
+
+    public function getAssignmentsByCourse(int $courseid) : array
+    {
+        $request = $this->constructRequest("gradereport_user_get_grade_items", [
+            "courseids[0]" => $courseid, 
+        ]);
+
+        return $request->send();
+    }
+
+    public function getAssignmentsByCourses(int $courseid, array $courseids) : array
+    {
+        $param = [];
+        foreach($courseids as $i=>$id)
+        {
+            $param["courseids[$i]"] = $id;
+        }
+
+        $request = $this->constructRequest("gradereport_user_get_grade_items", $param);
+
         return $request->send();
     }
 
@@ -103,6 +149,7 @@ class Moodle
         ];
 
         $request = $this->constructRequest("mod_assign_save_submission", $params);
+        
         return $request->send();
     }
 
@@ -112,6 +159,7 @@ class Moodle
     public function getAssignments(array $coursesId = []) : array
     {
         $request = $this->constructRequest("mod_assign_get_assignments", ["courseids" => $coursesId, "capabilities" => ["mod/assign:submit"]]);
+        
         return $request->send();
     }
 
@@ -121,6 +169,7 @@ class Moodle
     public function viewAssign() : array
     {
         $request = $this->constructRequest("mod_assign_view_assign", []);
+
         return $request->send();
     }
     
@@ -130,6 +179,7 @@ class Moodle
     public function searchCourses(string $search): array
     {
         $request = $this->constructRequest("core_course_search_courses", ["criterianame" => "title", "criteriavalue" => $search]);
+        
         return $request->send();
     }
 }
