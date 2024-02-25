@@ -24,6 +24,16 @@ class Moodle
         private ?int $userId = null
     ){}
 
+    public function setUserId(int $userId) : void
+    {
+        $this->userId = $userId;
+    }
+
+    public function getUserId(int $userId) : ?int
+    {
+        return $this->userId;
+    }
+
     public function getUserInfo() : array
     {
         $request = $this->constructRequest("core_webservice_get_site_info");
