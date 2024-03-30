@@ -1,6 +1,12 @@
 {
     "name": "fugikzl/moodle-php",
     "description": "Wrapper for moodle webservices rest api",
+    "authors": [
+        {
+            "name": "Sailaubek Nariman",
+            "email": "sailaubek.nar@gmail.com"
+        }
+    ],
     "type": "library",
     "require": {
         "guzzlehttp/guzzle": "^7.8"
