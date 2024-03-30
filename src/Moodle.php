@@ -6,7 +6,7 @@ use Exception;
 
 class Moodle
 {
-    private function constructRequest(string $wsFunction, array $params = []) : Request
+    private function constructRequest(string $wsFunction, array $params = []): Request
     {
         return new Request($this->wsToken, $wsFunction, $this->webservicesUrl, $params);
     }
@@ -22,37 +22,38 @@ class Moodle
         private string $webservicesUrl,
         private string $wsToken,
         private ?int $userId = null
-    ){}
+    ) {
+    }
 
-    public function setUserId(int $userId) : void
+    public function setUserId(int $userId): void
     {
         $this->userId = $userId;
     }
 
-    public function getUserId(int $userId) : ?int
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
 
-    public function getUserInfo() : array
+    public function getUserInfo(): array
     {
         $request = $this->constructRequest("core_webservice_get_site_info");
 
         return $request->send();
     }
 
-    public function getCalendarActionByTimesort(int $timeSortFrom, int $timeSortTo) : array
+    public function getCalendarActionByTimesort(int $timeSortFrom, int $timeSortTo): array
     {
         $this->ensureUserIdIsSet();
         $request = $this->constructRequest("core_calendar_get_action_events_by_timesort", [
-            "timesortfrom" => $timeSortFrom, 
+            "timesortfrom" => $timeSortFrom,
             "timesortto" => $timeSortTo
         ]);
-        
+
         return $request->send();
     }
 
-    public function getUserCourses() : array
+    public function getUserCourses(): array
     {
         $this->ensureUserIdIsSet();
         $request = $this->constructRequest("core_enrol_get_users_courses", ["userid" => $this->userId]);
@@ -60,46 +61,45 @@ class Moodle
         return $request->send();
     }
 
-    public function getCoursesInfo(int $courseid) : array
+    public function getCoursesInfo(int $courseid): array
     {
-        $request = $this->constructRequest("core_course_get_contents",["courseid" => $courseid]);
-        
+        $request = $this->constructRequest("core_course_get_contents", ["courseid" => $courseid]);
+
         return $request->send();
     }
 
-    public function getUserCoursesGrade() : array
+    public function getUserCoursesGrade(): array
     {
         $this->ensureUserIdIsSet();
         $request = $this->constructRequest("gradereport_overview_get_course_grades", ["userid" => $this->userId]);
-        
+
         return $request->send();
     }
 
-    public function getCourseGrades(int $courseid) : array
+    public function getCourseGrades(int $courseid): array
     {
         $this->ensureUserIdIsSet();
         $request = $this->constructRequest("gradereport_user_get_grade_items", [
-            "courseid" => $courseid, 
+            "courseid" => $courseid,
             "userid" => $this->userId
         ]);
-        
+
         return $request->send();
     }
 
-    public function getAssignmentsByCourse(int $courseid) : array
+    public function getAssignmentsByCourse(int $courseid): array
     {
         $request = $this->constructRequest("gradereport_user_get_grade_items", [
-            "courseids[0]" => $courseid, 
+            "courseids[0]" => $courseid,
         ]);
 
         return $request->send();
     }
 
-    public function getAssignmentsByCourses(int $courseid, array $courseids) : array
+    public function getAssignmentsByCourses(int $courseid, array $courseids): array
     {
         $param = [];
-        foreach($courseids as $i=>$id)
-        {
+        foreach($courseids as $i => $id) {
             $param["courseids[$i]"] = $id;
         }
 
@@ -108,14 +108,14 @@ class Moodle
         return $request->send();
     }
 
-    public function getUserPreferences() : array
+    public function getUserPreferences(): array
     {
         $request = $this->constructRequest("core_user_get_user_preferences");
         return $request->send();
     }
 
-    public function getEnrolledCoursesByTimelineClassification(string $classification = "inprogress") : array
-    {       
+    public function getEnrolledCoursesByTimelineClassification(string $classification = "inprogress"): array
+    {
         $allowed = ["future", "inprogress", "past"];
         if(!in_array($classification, $allowed)) {
             throw new Exception("Classification is invalid");
@@ -124,7 +124,7 @@ class Moodle
         return $request->send();
     }
 
-    public function uploadFile(string $filePath, string $fileName, string $url) : array
+    public function uploadFile(string $filePath, string $fileName, string $url): array
     {
         $body = [
             [
@@ -141,7 +141,7 @@ class Moodle
             ],
             [
                 'name'     => 'file',
-                'contents' => fopen($filePath, 'r') 
+                'contents' => fopen($filePath, 'r')
             ],
         ];
         $params = ["userid" => $this->userId, "filearea" => "private"];
@@ -159,37 +159,37 @@ class Moodle
         ];
 
         $request = $this->constructRequest("mod_assign_save_submission", $params);
-        
+
         return $request->send();
     }
 
     /**
      * https://github.com/totara/moodle/blob/master/mod/assign/externallib.php#L253
      */
-    public function getAssignments(array $coursesId = []) : array
+    public function getAssignments(array $coursesId = []): array
     {
         $request = $this->constructRequest("mod_assign_get_assignments", ["courseids" => $coursesId, "capabilities" => ["mod/assign:submit"]]);
-        
+
         return $request->send();
     }
 
     /**
      * NOT TESTED
      */
-    public function viewAssign() : array
+    public function viewAssign(): array
     {
         $request = $this->constructRequest("mod_assign_view_assign", []);
 
         return $request->send();
     }
-    
+
     /**
      * NOT TESTED
      */
     public function searchCourses(string $search): array
     {
         $request = $this->constructRequest("core_course_search_courses", ["criterianame" => "title", "criteriavalue" => $search]);
-        
+
         return $request->send();
     }
 }
