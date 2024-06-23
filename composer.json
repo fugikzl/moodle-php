@@ -1,6 +1,9 @@
 {
     "name": "fugikzl/moodle-php",
     "description": "Wrapper for moodle webservices rest api",
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse src --level=5"
+    },
     "authors": [
         {
             "name": "Sailaubek Nariman",
@@ -9,12 +12,16 @@
     ],
     "type": "library",
     "require": {
-        "guzzlehttp/guzzle": "^7.8"
+        "guzzlehttp/guzzle": "^7.8",
+        "spatie/php-cloneable": "^1.0"
     },
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Fugikzl\\MoodleWrapper\\": "src/"
+            "Fugikzl\\Moodle\\": "src/"
         }
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10"
     }
 }
