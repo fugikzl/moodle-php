@@ -1,10 +1,12 @@
 <?php
 
-namespace Fugikzl\MoodleWrapper;
+declare(strict_types=1);
+
+namespace Fugikzl\Moodle\Client;
 
 use Exception;
 
-class Moodle
+final class Client
 {
     private function constructRequest(string $wsFunction, array $params = []): Request
     {
@@ -169,26 +171,6 @@ class Moodle
     public function getAssignments(array $coursesId = []): array
     {
         $request = $this->constructRequest("mod_assign_get_assignments", ["courseids" => $coursesId, "capabilities" => ["mod/assign:submit"]]);
-
-        return $request->send();
-    }
-
-    /**
-     * NOT TESTED
-     */
-    public function viewAssign(): array
-    {
-        $request = $this->constructRequest("mod_assign_view_assign", []);
-
-        return $request->send();
-    }
-
-    /**
-     * NOT TESTED
-     */
-    public function searchCourses(string $search): array
-    {
-        $request = $this->constructRequest("core_course_search_courses", ["criterianame" => "title", "criteriavalue" => $search]);
 
         return $request->send();
     }

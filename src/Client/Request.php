@@ -1,19 +1,22 @@
 <?php
 
-namespace Fugikzl\MoodleWrapper;
+declare(strict_types=1);
+
+namespace Fugikzl\Moodle\Client;
 
 use Exception;
 use GuzzleHttp\Client;
 
-class UploadFileRequest
+class Request
 {
     public function __construct(
         string $wsToken,
+        string $wsFunction,
         private string $webservicesUrl,
         private array $params = [],
-        private array $body
     ) {
-        $this->params['token'] = $wsToken;
+        $this->params['wsfunction'] = $wsFunction;
+        $this->params['wstoken'] = $wsToken;
         $this->params['moodlewsrestformat'] = 'json';
     }
 
@@ -22,15 +25,14 @@ class UploadFileRequest
         $client = new Client();
         $res = $client->request("POST", $this->webservicesUrl, [
             'query' => $this->params,
-            "multipart" => $this->body
         ]);
 
-        $data = json_decode($res->getBody()->getContents(), 1);
+        $data = json_decode($res->getBody()->getContents(), true);
 
         if(array_key_exists("exception", $data)) {
             throw new Exception($data["message"]);
-        } else {
-            return $data;
         }
+
+        return $data;
     }
 }
